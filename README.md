@@ -11,4 +11,4 @@ RtAudio在静态库编译情况下，会自动将MD标记改写为MT标记，可
 #### 使用
 程序运行界面如下：
 
-
+![输入图片说明](https://gitee.com/koala999/kRecorder/blob/master/main.bmp)
