@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 #pragma once
 #include <QWidget>
 #include <vector>
@@ -36,42 +35,3 @@ private:
     std::vector<std::pair<float, float>> barRanges_;
 };
 
-=======
-#pragma once
-#include <QWidget>
-#include <vector>
-
-
-// 用于显示波形谱
-class QWaveBar : public QWidget
-{
-    Q_OBJECT
-
-public:
-    explicit QWaveBar(QWidget *parent = nullptr);
-
-    void setForeground(QColor color) {
-        barColor_ = color;
-    }
-
-    void setBarSize(int width, int space) {
-        barWidth_ = width, barSpace_ = space;
-    }
-
-    int getBarCount() const;
-
-    void setBarRanges(const std::vector<std::pair<float, float>>& ranges) {
-        barRanges_ = ranges;
-    }
-
-protected:
-    void paintEvent(QPaintEvent *);
-
-
-private:
-    QColor barColor_;
-    int barWidth_, barSpace_;
-    std::vector<std::pair<float, float>> barRanges_;
-};
-
->>>>>>> cda5f07e398855ee1ee2981f09e438c3a9f5813e
