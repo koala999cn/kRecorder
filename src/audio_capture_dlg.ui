@@ -212,7 +212,7 @@
      <string>暂停</string>
     </property>
     <property name="icon">
-     <iconset resource="../icons.qrc">
+     <iconset resource="../resource/icons.qrc">
       <normaloff>:/icon/pause</normaloff>:/icon/pause</iconset>
     </property>
     <property name="autoDefault">
@@ -233,7 +233,7 @@
      <string>录制</string>
     </property>
     <property name="icon">
-     <iconset resource="../icons.qrc">
+     <iconset resource="../resource/icons.qrc">
       <normaloff>:/icon/record</normaloff>:/icon/record</iconset>
     </property>
     <property name="default">
@@ -251,7 +251,7 @@
      <string>停止</string>
     </property>
     <property name="icon">
-     <iconset resource="../icons.qrc">
+     <iconset resource="../resource/icons.qrc">
       <normaloff>:/icon/stop</normaloff>:/icon/stop</iconset>
     </property>
     <property name="autoDefault">
@@ -275,7 +275,7 @@
      <string>播放</string>
     </property>
     <property name="icon">
-     <iconset resource="../icons.qrc">
+     <iconset resource="../resource/icons.qrc">
       <normaloff>:/icon/play</normaloff>:/icon/play</iconset>
     </property>
     <property name="autoDefault">
@@ -292,7 +292,7 @@
    </property>
    <property name="geometry">
     <rect>
-     <x>9</x>
+     <x>10</x>
      <y>11</y>
      <width>341</width>
      <height>81</height>
@@ -399,7 +399,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../icons.qrc"/>
+  <include location="../resource/icons.qrc"/>
  </resources>
  <connections/>
 </ui>
