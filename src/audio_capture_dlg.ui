@@ -213,7 +213,7 @@
     </property>
     <property name="icon">
      <iconset resource="../resource/icons.qrc">
-      <normaloff>:/icon/pause</normaloff>:/icon/pause</iconset>
+      <normaloff>:/kRecorder/pause</normaloff>:/kRecorder/pause</iconset>
     </property>
     <property name="autoDefault">
      <bool>false</bool>
@@ -234,7 +234,7 @@
     </property>
     <property name="icon">
      <iconset resource="../resource/icons.qrc">
-      <normaloff>:/icon/record</normaloff>:/icon/record</iconset>
+      <normaloff>:/kRecorder/record</normaloff>:/kRecorder/record</iconset>
     </property>
     <property name="default">
      <bool>false</bool>
@@ -252,7 +252,7 @@
     </property>
     <property name="icon">
      <iconset resource="../resource/icons.qrc">
-      <normaloff>:/icon/stop</normaloff>:/icon/stop</iconset>
+      <normaloff>:/kRecorder/stop</normaloff>:/kRecorder/stop</iconset>
     </property>
     <property name="autoDefault">
      <bool>false</bool>
@@ -276,7 +276,7 @@
     </property>
     <property name="icon">
      <iconset resource="../resource/icons.qrc">
-      <normaloff>:/icon/play</normaloff>:/icon/play</iconset>
+      <normaloff>:/kRecorder/play</normaloff>:/kRecorder/play</iconset>
     </property>
     <property name="autoDefault">
      <bool>false</bool>

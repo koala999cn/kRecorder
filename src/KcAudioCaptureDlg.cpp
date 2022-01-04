@@ -124,8 +124,8 @@ KcAudioCaptureDlg::KcAudioCaptureDlg(QWidget *parent) :
 
     ui->btOk->setIcon(QApplication::style()->standardIcon(QStyle::SP_DialogSaveButton));
     ui->btCancel->setIcon(QApplication::style()->standardIcon(QStyle::SP_DialogCancelButton));
-    ui->btStart->setIcon(QIcon(":/icon/record"));
-    ui->btStop->setIcon(QIcon(":/icon/stop"));
+    ui->btStart->setIcon(QIcon(":/kRecorder/record"));
+    ui->btStop->setIcon(QIcon(":/kRecorder/stop"));
 
     syncUiState_(k_ready);
 }
@@ -179,20 +179,20 @@ void KcAudioCaptureDlg::syncUiState_(int state)
 
     if(state == k_play) {
         ui->btPlay->setText("停止");
-        ui->btPlay->setIcon(QIcon(":/icon/stop_play"));
+        ui->btPlay->setIcon(QIcon(":/kRecorder/stop_play"));
     }
     else {
         ui->btPlay->setText("播放");
-        ui->btPlay->setIcon(QIcon(":/icon/play"));
+        ui->btPlay->setIcon(QIcon(":/kRecorder/play"));
     }
 
     if(state == k_pause) {
         ui->btPause->setText("继续");
-        ui->btPause->setIcon(QIcon(":/icon/goon"));
+        ui->btPause->setIcon(QIcon(":/kRecorder/goon"));
     }
     else {
         ui->btPause->setText("暂停");
-        ui->btPause->setIcon(QIcon(":/icon/pause"));
+        ui->btPause->setIcon(QIcon(":/kRecorder/pause"));
     }
 }
 
