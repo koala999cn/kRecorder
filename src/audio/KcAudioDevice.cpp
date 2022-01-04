@@ -1,6 +1,6 @@
 #include "KcAudioDevice.h"
 #include "rtaudio/RtAudio.h"
-#include "KuThread.h"
+#include "base/KuThread.h"
 
 
 #if defined(_MSC_VER)

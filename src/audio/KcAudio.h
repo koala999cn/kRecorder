@@ -1,5 +1,5 @@
 #pragma once
-#include "KcSampled1d.h"
+#include "dsp/KcSampled1d.h"
 #include <string>
 
 

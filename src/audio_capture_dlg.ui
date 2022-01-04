@@ -386,15 +386,15 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QVolumnBar</class>
+   <class>QWaveBar</class>
    <extends>QWidget</extends>
-   <header>QVolumnBar.h</header>
+   <header location="global">gui/QWaveBar.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QWaveBar</class>
+   <class>QVolumnBar</class>
    <extends>QWidget</extends>
-   <header location="global">QWaveBar.h</header>
+   <header location="global">gui/QvolumnBar.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
