@@ -1,15 +1,20 @@
 # Prerequisites
 *.d
+*.ipch
+*.suo
+*.db
 
 # Compiled Object files
 *.slo
 *.lo
 *.o
 *.obj
+*.ilk
 
 # Precompiled Headers
 *.gch
 *.pch
+*.qm
 
 # Compiled Dynamic libraries
 *.so
