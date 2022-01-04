@@ -147,13 +147,18 @@ void KcAudioCaptureDlg::syncDeviceInfo_()
     auto info = ad.info(deviceId);
     assert(QString::fromLocal8Bit(info.name) == ui->cbDeviceList->currentText());
 
+    auto rate = ui->cbRate->currentText();
     ui->cbRate->clear();
     for(unsigned i = 0; i < info.sampleRates.size(); i++)
         ui->cbRate->addItem(QString::number(info.sampleRates[i]));
+    ui->cbRate->setCurrentText(rate);
 
-    ui->rbMono->setChecked(true);
     ui->rbMono->setEnabled(info.inputChannels > 0);
     ui->rbStereo->setEnabled(info.inputChannels > 1);
+    if(ui->rbStereo->isChecked() && info.inputChannels > 1)
+        ui->rbStereo->setChecked(true);
+    else
+        ui->rbMono->setChecked(true);
 }
 
 

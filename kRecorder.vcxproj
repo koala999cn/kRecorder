@@ -47,7 +47,7 @@
     <QtMoc Include="src\gui\QVolumnBar.h" />
   </ItemGroup>
   <ItemGroup>
-    <QtRcc Include="icons.qrc" />
+    <QtRcc Include="resource\icons.qrc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{0E8ED5ED-61FF-4110-B46E-C8A204359B8B}</ProjectGuid>
