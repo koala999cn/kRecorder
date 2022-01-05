@@ -213,7 +213,7 @@ void KcAudioCaptureDlg::on_btStart_clicked()
     audio_->reset(1.0/sampleRate, channels);
     if(!capture_->record(audio_, deviceId)) {
         ui->btStart->setDisabled(false);
-        messageBox_(capture_->error(), "错误");
+        QMessageBox::information(this, QString::fromLocal8Bit("错误"), QString::fromLocal8Bit(capture_->error()));
         return;
     }
 
@@ -292,9 +292,8 @@ void KcAudioCaptureDlg::on_btOk_clicked()
 
     auto path = QFileDialog::getSaveFileName(this, tr("保存录音"), "", filter);
     auto r = audio_->save(path.toLocal8Bit().data());
-    if (!r.empty()) {
-        messageBox_(r, "错误");
-    }
+    if (!r.empty()) 
+        QMessageBox::information(this, QString::fromLocal8Bit("错误"), QString::fromLocal8Bit(r));
 }
 
 
@@ -313,15 +312,4 @@ void KcAudioCaptureDlg::timerEvent( QTimerEvent *event)
             syncUiState_(capture_->pausing() ? k_pause : k_ready);
         }
     }
-}
-
-
-void KcAudioCaptureDlg::messageBox_(std::string msg, std::string title)
-{
-    QMessageBox box(this);
-    box.setWindowTitle(QString::fromStdString(title));
-    box.setText(QString::fromLocal8Bit(msg));
-    box.setIcon(QMessageBox::Information);
-    box.setStandardButtons(QMessageBox::Ok);
-    box.exec();
 }

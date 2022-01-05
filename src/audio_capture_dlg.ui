@@ -211,10 +211,6 @@
     <property name="text">
      <string>暂停</string>
     </property>
-    <property name="icon">
-     <iconset resource="../resource/icons.qrc">
-      <normaloff>:/kRecorder/pause</normaloff>:/kRecorder/pause</iconset>
-    </property>
     <property name="autoDefault">
      <bool>false</bool>
     </property>
@@ -232,10 +228,6 @@
     <property name="text">
      <string>录制</string>
     </property>
-    <property name="icon">
-     <iconset resource="../resource/icons.qrc">
-      <normaloff>:/kRecorder/record</normaloff>:/kRecorder/record</iconset>
-    </property>
     <property name="default">
      <bool>false</bool>
     </property>
@@ -249,10 +241,6 @@
     </property>
     <property name="text">
      <string>停止</string>
-    </property>
-    <property name="icon">
-     <iconset resource="../resource/icons.qrc">
-      <normaloff>:/kRecorder/stop</normaloff>:/kRecorder/stop</iconset>
     </property>
     <property name="autoDefault">
      <bool>false</bool>
@@ -273,10 +261,6 @@
     </property>
     <property name="text">
      <string>播放</string>
-    </property>
-    <property name="icon">
-     <iconset resource="../resource/icons.qrc">
-      <normaloff>:/kRecorder/play</normaloff>:/kRecorder/play</iconset>
     </property>
     <property name="autoDefault">
      <bool>false</bool>

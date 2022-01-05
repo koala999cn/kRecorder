@@ -37,9 +37,6 @@ private:
     enum { k_capture, k_play, k_pause, k_ready };
     void syncUiState_(int state);
 
-    void messageBox_(std::string msg, std::string title);
-
-
 public:
     std::shared_ptr<KcAudio> audio_; // 录制的音频
 
