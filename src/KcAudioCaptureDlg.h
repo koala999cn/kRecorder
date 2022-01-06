@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <QDialog>
 #include <memory>
 #include <vector>
@@ -20,6 +20,11 @@ public:
     explicit KcAudioCaptureDlg(QWidget *parent = nullptr);
     ~KcAudioCaptureDlg();
 
+    // 设置嵌入模式
+    // 嵌入模式下，录音对话框显示“确定/取消”按钮
+    // 非嵌入模式下，录音对话框显示“保存/退出”按钮
+    void setEmbeddingMode(bool embed);
+
 private slots:
     void on_btStart_clicked();
     void on_btPlay_clicked();
@@ -34,8 +39,8 @@ private slots:
 private:
     void syncDeviceInfo_();
 
-    enum { k_capture, k_play, k_pause, k_ready };
-    void syncUiState_(int state);
+    enum class kState { capture, play, pause, ready };
+    void syncUiState_(kState state);
 
 public:
     std::shared_ptr<KcAudio> audio_; // 录制的音频
@@ -45,6 +50,7 @@ private:
     std::unique_ptr<KcAudioCapture> capture_; // 录制设备
     std::unique_ptr<KcAudioRender> render_; // 播放设备，用于试听
     int timerId_;
+    bool embed_;
 };
 
 

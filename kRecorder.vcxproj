@@ -21,6 +21,7 @@
     <ClCompile Include="src\audio\KgAudioFile.cpp" />
     <ClCompile Include="src\base\KuThread.cpp" />
     <ClCompile Include="src\dsp\KcSampled1d.cpp" />
+    <ClCompile Include="src\gui\QUtils.cpp" />
     <ClCompile Include="src\gui\QVolumnBar.cpp" />
     <ClCompile Include="src\gui\QWaveBar.cpp" />
     <ClCompile Include="src\KcAudioCaptureDlg.cpp" />
@@ -43,6 +44,7 @@
     <ClInclude Include="src\dsp\KtSampling.h" />
     <ClInclude Include="src\dsp\KtuMath.h" />
     <ClInclude Include="src\dsp\KvData1d.h" />
+    <ClInclude Include="src\gui\QUtils.h" />
     <QtMoc Include="src\gui\QWaveBar.h" />
     <QtMoc Include="src\gui\QVolumnBar.h" />
   </ItemGroup>

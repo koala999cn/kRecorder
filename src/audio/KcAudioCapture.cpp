@@ -1,4 +1,4 @@
-#include "KcAudioCapture.h"
+﻿#include "KcAudioCapture.h"
 #include "KcAudio.h"
 
 
@@ -83,18 +83,17 @@ bool KcAudioCapture::record(std::shared_ptr<KcAudio>& audio, unsigned deviceId, 
 
 bool KcAudioCapture::stop(bool wait)
 { 
-    assert(running());
+    assert(running() || pausing());
+
+    if (running() && !device_->stop(wait))
+        return false;
 
     auto obs = dynamic_cast<kPrivate::KcRecorderObserver*>(device_->getObserver(0).get());
     assert(obs != nullptr);
     obs->reset();
 
-    if (device_->stop(wait)) {
-        openedDevice_ = -1;
-        return true;
-    }
-        
-    return false;
+    openedDevice_ = -1;
+    return true;
 }
 
 

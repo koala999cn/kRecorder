@@ -1,5 +1,9 @@
-#include "KcAudioCaptureDlg.h"
+﻿#include "KcAudioCaptureDlg.h"
 #include "ui_audio_capture_dlg.h"
+#include <assert.h>
+#include <memory>
+#include <QFileDialog>
+#include <QMessageBox>
 #include "audio/KcAudioDevice.h"
 #include "audio/KcAudioRender.h"
 #include "audio/KcAudioCapture.h"
@@ -7,10 +11,7 @@
 #include "audio/KcAudio.h"
 #include "dsp/KtuMath.h"
 #include "dsp/KtSampling.h"
-#include <assert.h>
-#include <memory>
-#include <QFileDialog>
-#include <QMessageBox>
+#include "gui/QUtils.h"
 
 
 namespace kPrivate
@@ -44,7 +45,7 @@ namespace kPrivate
             ui_->wgVolumn->update();
 
             // 更新计时组件
-            ui_->lbTime->setText(QString("%1:%2:%3").
+            ui_->lbTime->setText(QString(u8"%1:%2:%3").
                                     arg(int(streamTime/60)%60, 2, 10, QChar('0')).
                                     arg(int(streamTime)%60, 2, 10, QChar('0')).
                                     arg(int(streamTime*1000)%1000, 3, 10, QChar('0'))
@@ -83,7 +84,8 @@ namespace kPrivate
 KcAudioCaptureDlg::KcAudioCaptureDlg(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::KcAudioCaptureDlg),
-    timerId_(-1)
+    timerId_(-1),
+    embed_(false)
 {
     ui->setupUi(this);
     audio_ = std::make_shared<KcAudio>();
@@ -120,14 +122,12 @@ KcAudioCaptureDlg::KcAudioCaptureDlg(QWidget *parent) :
 
     // 界面美化：设置图标
     setWindowIcon(QApplication::style()->standardIcon((enum QStyle::StandardPixmap)0));
-    setWindowTitle(tr("录音"));
 
-    ui->btOk->setIcon(QApplication::style()->standardIcon(QStyle::SP_DialogSaveButton));
-    ui->btCancel->setIcon(QApplication::style()->standardIcon(QStyle::SP_DialogCancelButton));
-    ui->btStart->setIcon(QIcon(":/kRecorder/record"));
-    ui->btStop->setIcon(QIcon(":/kRecorder/stop"));
+    ui->btStart->setIcon(QIcon(u8":/kRecorder/record"));
+    ui->btStop->setIcon(QIcon(u8":/kRecorder/stop"));
 
-    syncUiState_(k_ready);
+    setEmbeddingMode(false); // 默认非嵌入模式
+    syncUiState_(kState::ready);
 }
 
 
@@ -137,6 +137,25 @@ KcAudioCaptureDlg::~KcAudioCaptureDlg()
     if(capture_->running()) capture_->stop(true);
 
     delete ui;
+}
+
+
+void KcAudioCaptureDlg::setEmbeddingMode(bool embed)
+{
+    embed_ = embed;
+
+    if (embed) {
+        ui->btOk->setText(tr(u8"确定"));
+        ui->btOk->setIcon(QApplication::style()->standardIcon(QStyle::SP_DialogOkButton));
+        ui->btCancel->setText(tr(u8"取消"));
+        ui->btCancel->setIcon(QApplication::style()->standardIcon(QStyle::SP_DialogCancelButton));
+    }
+    else {
+        ui->btOk->setText(tr(u8"保存..."));
+        ui->btOk->setIcon(QApplication::style()->standardIcon(QStyle::SP_DialogSaveButton));
+        ui->btCancel->setText(tr(u8"退出"));
+        ui->btCancel->setIcon(QApplication::style()->standardIcon(QStyle::SP_DialogCancelButton));
+    }
 }
 
 
@@ -162,37 +181,37 @@ void KcAudioCaptureDlg::syncDeviceInfo_()
 }
 
 
-void KcAudioCaptureDlg::syncUiState_(int state)
+void KcAudioCaptureDlg::syncUiState_(kState state)
 {
-    ui->cbDeviceList->setEnabled(state == k_ready);
-    ui->cbRate->setEnabled(state == k_ready);
-    ui->rbMono->setEnabled(state == k_ready);
-    ui->rbStereo->setEnabled(state == k_ready);
+    ui->cbDeviceList->setEnabled(state == kState::ready);
+    ui->cbRate->setEnabled(state == kState::ready);
+    ui->rbMono->setEnabled(state == kState::ready);
+    ui->rbStereo->setEnabled(state == kState::ready);
 
-    ui->btOk->setEnabled(state == k_ready);
-    ui->btCancel->setEnabled(state == k_ready);
-    ui->btPlay->setEnabled(state != k_capture && audio_ && audio_->count() > 0);
-    ui->btStart->setEnabled(state == k_ready);
-    ui->btStop->setEnabled(state == k_capture || state == k_pause);
-    ui->btPause->setEnabled(state == k_capture || state == k_pause);
+    ui->btOk->setEnabled(state == kState::ready && audio_ && audio_->count() > 0);
+    ui->btCancel->setEnabled(state == kState::ready);
+    ui->btPlay->setEnabled(state != kState::capture && audio_ && audio_->count() > 0); // 允许暂停录音时回放
+    ui->btStart->setEnabled(state == kState::ready);
+    ui->btStop->setEnabled(state == kState::capture || state == kState::pause);
+    ui->btPause->setEnabled(state == kState::capture || state == kState::pause);
 
 
-    if(state == k_play) {
-        ui->btPlay->setText("停止");
-        ui->btPlay->setIcon(QIcon(":/kRecorder/stop_play"));
+    if(state == kState::play) {
+        ui->btPlay->setText(tr(u8"停止"));
+        ui->btPlay->setIcon(QIcon(u8":/kRecorder/stop_play"));
     }
     else {
-        ui->btPlay->setText("播放");
-        ui->btPlay->setIcon(QIcon(":/kRecorder/play"));
+        ui->btPlay->setText(tr(u8"播放"));
+        ui->btPlay->setIcon(QIcon(u8":/kRecorder/play"));
     }
 
-    if(state == k_pause) {
-        ui->btPause->setText("继续");
-        ui->btPause->setIcon(QIcon(":/kRecorder/goon"));
+    if(state == kState::pause) {
+        ui->btPause->setText(tr(u8"继续"));
+        ui->btPause->setIcon(QIcon(u8":/kRecorder/goon"));
     }
     else {
-        ui->btPause->setText("暂停");
-        ui->btPause->setIcon(QIcon(":/kRecorder/pause"));
+        ui->btPause->setText(tr(u8"暂停"));
+        ui->btPause->setIcon(QIcon(u8":/kRecorder/pause"));
     }
 }
 
@@ -213,34 +232,50 @@ void KcAudioCaptureDlg::on_btStart_clicked()
     audio_->reset(1.0/sampleRate, channels);
     if(!capture_->record(audio_, deviceId)) {
         ui->btStart->setDisabled(false);
-        QMessageBox::information(this, QString::fromLocal8Bit("错误"), QString::fromLocal8Bit(capture_->error()));
+        QMessageBox::information(this, u8"错误", QString::fromLocal8Bit(capture_->error())); // TODO: fromLocal8Bit???
         return;
     }
 
-    syncUiState_(k_capture);
+    syncUiState_(kState::capture);
 }
 
 
 // 停止录音
 void KcAudioCaptureDlg::on_btStop_clicked()
 {
-    assert(capture_ && capture_->running());
-    if (capture_->stop(true)) 
-        syncUiState_(k_ready);
+    ui->btStop->setDisabled(true);
+
+    assert(capture_ && (capture_->running() || capture_->pausing()));
+    if (!capture_->stop(true)) {
+        ui->btStop->setDisabled(false);
+        QMessageBox::information(this, u8"错误", QString::fromLocal8Bit(capture_->error())); // TODO: fromLocal8Bit???
+        return;
+    }
+
+    syncUiState_(kState::ready);
 }
 
 
 // 暂停/继续录音
 void KcAudioCaptureDlg::on_btPause_clicked()
 {
+    ui->btPause->setDisabled(true);
+
     if(capture_->running()) { // 暂停
-        if (capture_->pause(true)) 
-            syncUiState_(k_pause);
+        if (capture_->pause(true)) {
+            syncUiState_(kState::pause);
+            return;
+        }
     }
     else { // 继续
-        if (capture_->goon(true)) 
-            syncUiState_(k_capture);
+        if (capture_->goon(true)) {
+            syncUiState_(kState::capture);
+            return;
+        }
     }
+
+    ui->btPause->setDisabled(false);
+    QMessageBox::information(this, u8"错误", QString::fromLocal8Bit(capture_->error())); // TODO: fromLocal8Bit???
 }
 
 
@@ -254,46 +289,37 @@ void KcAudioCaptureDlg::on_btPlay_clicked()
                 timerId_ = -1;
             }
 
-            syncUiState_(capture_->pausing() ? k_pause : k_ready);
+            syncUiState_(capture_->pausing() ? kState::pause : kState::ready);
+            return;
         }
     }
     else { // 回放
         if(render_->playback(audio_)) {
-            syncUiState_(k_play);
+            syncUiState_(kState::play);
             assert(timerId_ == -1);
             timerId_ = startTimer(100); // 100ms定时器
+            return;
         }
     }
+
+    QMessageBox::information(this, u8"错误", QString::fromLocal8Bit(render_->error())); // TODO: fromLocal8Bit???
 }
 
 
 // 保存音频
 void KcAudioCaptureDlg::on_btOk_clicked()
 {
-    // 构造filter
-    QString filter;
-    for (int i = 0; i < KgAudioFile::getSupportTypeCount(); i++) {
-        QString x(KgAudioFile::getTypeDescription(i));
-        x.append('(');
-        auto exts = QString(KgAudioFile::getTypeExtension(i)).split('|');
-        for (auto s : exts) {
-            x.append("*.");
-            x.append(s);
-            x.append(' ');
-        }
-
-        x = x.trimmed();
-        x.append(')');
-
-        filter.append(x); 
-        if(i != KgAudioFile::getSupportTypeCount() - 1)
-            filter.append(";;");
+    if (embed_) {
+        accept();
     }
+    else {
+        auto path = QUtils::getAudioSavePath();
+        if (path.empty()) return;
 
-    auto path = QFileDialog::getSaveFileName(this, tr("保存录音"), "", filter);
-    auto r = audio_->save(path.toLocal8Bit().data());
-    if (!r.empty()) 
-        QMessageBox::information(this, QString::fromLocal8Bit("错误"), QString::fromLocal8Bit(r));
+        auto r = audio_->save(path);
+        if (!r.empty())
+            QMessageBox::information(this, u8"错误", QString::fromLocal8Bit(r)); // TODO: fromLocal8Bit???
+    }
 }
 
 
@@ -309,7 +335,7 @@ void KcAudioCaptureDlg::timerEvent( QTimerEvent *event)
         if(!render_->running()) {
             killTimer(timerId_);
             timerId_ = -1;
-            syncUiState_(capture_->pausing() ? k_pause : k_ready);
+            syncUiState_(capture_->pausing() ? kState::pause : kState::ready);
         }
     }
 }

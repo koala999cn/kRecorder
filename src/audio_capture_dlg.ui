@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>录音</string>
   </property>
   <widget class="QComboBox" name="cbDeviceList">
    <property name="geometry">
@@ -370,20 +370,20 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QVolumnBar</class>
+   <extends>QWidget</extends>
+   <header location="global">gui/QVolumnBar.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QWaveBar</class>
    <extends>QWidget</extends>
    <header location="global">gui/QWaveBar.h</header>
    <container>1</container>
   </customwidget>
-  <customwidget>
-   <class>QVolumnBar</class>
-   <extends>QWidget</extends>
-   <header location="global">gui/QvolumnBar.h</header>
-   <container>1</container>
-  </customwidget>
  </customwidgets>
  <resources>
-  <include location="../resource/icons.qrc"/>
+  <include location="../DataVis.qrc"/>
  </resources>
  <connections/>
 </ui>

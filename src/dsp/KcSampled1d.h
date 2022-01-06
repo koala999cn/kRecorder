@@ -9,14 +9,14 @@ class KcSampled1d : public KvData1d
 {
 public:
     KcSampled1d() {}
-    KcSampled1d(const std::vector<kReal>& data, kIndex channel = 0);
-    KcSampled1d(std::vector<kReal>&& data, kIndex channel = 0);
+    KcSampled1d(const std::vector<kReal>& data, kIndex channel = 1);
+    KcSampled1d(std::vector<kReal>&& data, kIndex channel = 1);
 
     KcSampled1d(const KcSampled1d& other);
     KcSampled1d(KcSampled1d&& other);
 
     // 给定采样率的空数据构造
-    KcSampled1d(kReal dx, kReal x0_rel = 0, kIndex channel = 0);
+    KcSampled1d(kReal dx, kReal x0_rel = 0, kIndex channel = 1);
 
 
     /// KvData1d接口实现

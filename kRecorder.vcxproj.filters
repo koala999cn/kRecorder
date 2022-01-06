@@ -55,6 +55,9 @@
     <ClCompile Include="src\base\KuThread.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\gui\QUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="src\KcAudioCaptureDlg.h">
@@ -105,6 +108,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\base\KuThread.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gui\QUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
