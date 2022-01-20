@@ -1,8 +1,8 @@
-#include "QWaveBar.h"
+﻿#include "QtWaveBar.h"
 #include <QPainter>
 
 
-QWaveBar::QWaveBar(QWidget *parent)
+QtWaveBar::QtWaveBar(QWidget *parent)
     : QWidget{parent}
     , barColor_(QColor(255, 63, 63)) // (255, 92, 92)
 {
@@ -10,12 +10,12 @@ QWaveBar::QWaveBar(QWidget *parent)
 }
 
 
-int QWaveBar::getBarCount() const {
+int QtWaveBar::getBarCount() const {
     return 0.5 + width() / (barWidth_ + barSpace_);
 }
 
 
-void QWaveBar::paintEvent(QPaintEvent *)
+void QtWaveBar::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
 

@@ -1,4 +1,4 @@
-#include "KcAudioDevice.h"
+﻿#include "KcAudioDevice.h"
 #include "rtaudio/RtAudio.h"
 #include "base/KuThread.h"
 
@@ -53,7 +53,7 @@ namespace kPrivate
     int audioCallback(void *outputBuffer, void *inputBuffer, unsigned frames,
                         double streamTime, RtAudioStreamStatus, void *userData)
     {
-        return ((KcAudioDevice*)userData)->notifyObservers(outputBuffer, inputBuffer, frames, streamTime)
+        return ((KcAudioDevice*)userData)->notify(outputBuffer, inputBuffer, frames, streamTime)
                     ? 0 : 1;
     }
 }
@@ -61,7 +61,7 @@ namespace kPrivate
 
 KcAudioDevice::KcAudioDevice(void) : inChannels_(0), outChannels_(0), frameSamples_(0)
 {
-    device_ = new RtAudio;
+    device_ = new RtAudio(RtAudio::WINDOWS_DS);
 }
 
 
@@ -83,7 +83,7 @@ unsigned KcAudioDevice::count() const
 }
 
 
-KcAudioDevice::KpDeviceInfo KcAudioDevice::info(unsigned device)
+KcAudioDevice::KpDeviceInfo KcAudioDevice::info(unsigned device) const
 {
     RtAudio::DeviceInfo rtinfo = RTAudio_->getDeviceInfo(device);
 
@@ -102,25 +102,13 @@ KcAudioDevice::KpDeviceInfo KcAudioDevice::info(unsigned device)
 
 unsigned KcAudioDevice::defaultInput() const
 {
-    for(unsigned idx = 0; idx < count(); idx++) {
-        RtAudio::DeviceInfo rtinfo = RTAudio_->getDeviceInfo(idx);
-        if(rtinfo.probed && rtinfo.isDefaultInput)
-            return idx;
-    }
-
-    return -1;
+    return RTAudio_->getDefaultInputDevice();
 }
 
 
 unsigned KcAudioDevice::defaultOutput() const
 {
-    for(unsigned idx = 0; idx < count(); idx++) {
-        RtAudio::DeviceInfo rtinfo = RTAudio_->getDeviceInfo(idx);
-        if(rtinfo.probed && rtinfo.isDefaultOutput)
-            return idx;
-    }
-
-    return -1;
+    return RTAudio_->getDefaultOutputDevice();
 }
 
 
@@ -160,6 +148,13 @@ unsigned KcAudioDevice::getDevice(const std::string& name) const
 }
 
 
+unsigned KcAudioDevice::preferredSampleRate(unsigned deviceId) const
+{
+    auto rtinfo = RTAudio_->getDeviceInfo(deviceId);
+    return rtinfo.probed ? rtinfo.preferredSampleRate : 0;
+}
+
+
 bool KcAudioDevice::open(const KpStreamParameters *outputParameters, const KpStreamParameters *inputParameters,
                                 KeSampleFormat format, unsigned sampleRate, unsigned& bufferFrames)
 {
@@ -196,7 +191,7 @@ bool KcAudioDevice::close(bool wait)
 {
     try	{
         RTAudio_->closeStream();
-        if(wait) while(opened()) KuThread::wait(0.05);
+        if(wait) while(opened()) KuThread::wait(0.05f);
     }
     catch(RtAudioError& err) {
         error_ = err.getMessage();
@@ -209,9 +204,11 @@ bool KcAudioDevice::close(bool wait)
 
 bool KcAudioDevice::start(bool wait)
 {
+    reset(); // 允许向观察者发送消息
+
     try	{
         RTAudio_->startStream();
-        if(wait) while(!running()) KuThread::wait(0.05);
+        if(wait) while(!running()) KuThread::wait(0.05f);
     }
     catch(RtAudioError& err) {
         error_ = err.getMessage();
@@ -226,12 +223,14 @@ bool KcAudioDevice::stop(bool wait)
 {
     try	{
         RTAudio_->stopStream();
-        if(wait) while(running()) KuThread::wait(0.05);
+        if(wait) while(running()) KuThread::wait(0.05f);
     }
     catch(RtAudioError& err) {
         error_ = err.getMessage();
         return false;
     }
+
+    freeze(); // 等待所有notify进程结束
 
     return true;
 }
@@ -241,12 +240,14 @@ bool KcAudioDevice::abort(bool wait)
 {
     try	{
         RTAudio_->abortStream();
-        if(wait) while(running()) KuThread::wait(0.05);
+        if(wait) while(running()) KuThread::wait(0.05f);
     }
     catch(RtAudioError& err) {
         error_ = err.getMessage();
         return false;
     }
+
+    freeze(); // 等待所有notify进程结束
 
     return true;
 }
@@ -270,19 +271,19 @@ unsigned KcAudioDevice::sampleRate() const
 }
 
 
-double KcAudioDevice::frameTime() const
+double KcAudioDevice::frameDuration() const
 {
     return double(frameSamples()) / sampleRate();
 }
 
 
-double KcAudioDevice::getTime()
+double KcAudioDevice::getStreamTime()
 {
     return RTAudio_->getStreamTime();
 }
 
 
-void KcAudioDevice::setTime(double time)
+void KcAudioDevice::setStreamTime(double time)
 {
     RTAudio_->setStreamTime(time);
 }

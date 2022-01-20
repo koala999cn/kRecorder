@@ -1,11 +1,10 @@
-#pragma once
+Ôªø#pragma once
 #include <vector>
 #include <string>
-#include "../base/KtObservable.h"
+#include "KtObservable.h"
 
-class KcAudio;
 
-// “Ù∆µ…Ë±∏ª˘¿‡
+// Èü≥È¢ëËÆæÂ§áÂü∫Á±ª
 class KcAudioDevice : public KtObservable<void*, void*, unsigned, double>
 {
 public:
@@ -18,8 +17,10 @@ public:
 	{
         k_8k  =  8000,
         k_11k = 11025,
+		k_12k = 12000,
         k_16k = 16000,
         k_22k = 22050,
+		k_24k = 24000,
         k_32k = 32000,
         k_44k = 44100,
         k_48k = 48000,
@@ -28,7 +29,7 @@ public:
 	};
 
 
-	enum KeSampleFormat
+	enum KeSampleFormat // ‰∏éRtAudio‰øùÊåÅ‰∏ÄËá¥
 	{
         k_sint8   = 0x01,   // 8-bit signed integer.
         k_sint16  = 0x02,   // 16-bit signed integer.
@@ -70,7 +71,7 @@ public:
 
 
     // return a KpDeviceInfo structure for a specified device number.
-    KpDeviceInfo info(unsigned deviceId);
+    KpDeviceInfo info(unsigned deviceId) const;
 
 
     // query for the default input audio devices. -1 for none.
@@ -90,6 +91,11 @@ public:
 
     // query for the existence of output audio devices
     bool hasOutput() const;
+
+
+    // return 0 for error
+    unsigned preferredSampleRate(unsigned deviceId) const;
+
 
 
     /* opening a stream with the specified parameters.
@@ -121,32 +127,14 @@ public:
 
 
 	//! A function that starts a stream.
-	/*!
-	An RtAudioError (type = SYSTEM_ERROR) is thrown if an error occurs
-	during processing.  An RtAudioError (type = INVALID_USE) is thrown if a
-	stream is not open.  A warning is issued if the stream is already
-	running.
-	*/
     bool start(bool wait);
 
 
 	//! Stop a stream, allowing any samples remaining in the output queue to be played.
-	/*!
-	An RtAudioError (type = SYSTEM_ERROR) is thrown if an error occurs
-	during processing.  An RtAudioError (type = INVALID_USE) is thrown if a
-	stream is not open.  A warning is issued if the stream is already
-	stopped.
-	*/
     bool stop(bool wait);
 
 
 	//! Stop a stream, discarding any samples remaining in the input/output queue.
-	/*!
-	An RtAudioError (type = SYSTEM_ERROR) is thrown if an error occurs
-	during processing.  An RtAudioError (type = INVALID_USE) is thrown if a
-	stream is not open.  A warning is issued if the stream is already
-	stopped.
-	*/
     bool abort(bool wait);
 
 
@@ -159,17 +147,11 @@ public:
 
 
 	//! Returns the number of elapsed seconds since the stream was started.
-	/*!
-	If a stream is not open, an RtAudioError (type = INVALID_USE) will be thrown.
-	*/
-    double getTime();
+    double getStreamTime();
 
 
 	//! Set the stream time to a time in seconds greater than or equal to 0.0.
-	/*!
-	If a stream is not open, an RtAudioError (type = INVALID_USE) will be thrown.
-	*/
-    void setTime( double time );
+    void setStreamTime( double time );
 
 
 	//! Returns the internal stream latency in sample frames.
@@ -177,8 +159,7 @@ public:
 	The stream latency refers to delay in audio input and/or output
 	caused by internal buffering by the audio system and/or hardware.
 	For duplex streams, the returned value will represent the sum of
-	the input and output latencies.  If a stream is not open, an
-	RtAudioError (type = INVALID_USE) will be thrown.  If the API does not
+	the input and output latencies.  If the API does not
 	report latency, the return value will be zero.
 	*/
     long latency();
@@ -187,20 +168,17 @@ public:
 	//! Returns actual sample rate in use by the stream.
 	/*!
 	On some systems, the sample rate used may be slightly different
-	than that specified in the stream parameters.  If a stream is not
-	open, an RtAudioError (type = INVALID_USE) will be thrown.
+	than that specified in the stream parameters.
 	*/
     unsigned sampleRate() const;
 
-    unsigned frameSamples() const { return frameSamples_; } // √ø÷°≤…—˘µ„ ˝
-    double frameTime() const; // √ø÷° ±≥§£®s£©
+    unsigned frameSamples() const { return frameSamples_; } // ÊØèÂ∏ßÈááÊ†∑ÁÇπÊï∞
+    double frameDuration() const; // ÊØèÂ∏ßÊó∂ÈïøÔºàsÔºâ
 
     auto inputChannels() const { return inChannels_; }
     auto outputChannels() const { return outChannels_; }
 
-    const char* error() const {
-        return error_.c_str();
-    }
+    const char* errorText() const { return error_.c_str(); }
 
 
 private:

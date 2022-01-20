@@ -1,4 +1,4 @@
-#include "KcSampled1d.h"
+﻿#include "KcSampled1d.h"
 #include <assert.h>
 #include <string.h>
 #include "KtuMath.h"
@@ -50,7 +50,7 @@ KcSampled1d::KcSampled1d(kReal dx, kReal x0_rel, kIndex channels)
 
 kIndex KcSampled1d::count() const
 {
-    return channels() == 0 ? 0 : data_.size() / channels();
+    return channels() == 0 ? 0 : static_cast<kIndex>(data_.size()) / channels();
 }
 
 
@@ -97,7 +97,7 @@ void KcSampled1d::setSamples(kIndex idx, const kReal* v, kIndex N)
     assert(idx < count());
     kReal* p = data_.data() + offset_(idx);
 
-    ::memcpy_s(p, sizeOfSamples(count()-idx), v, sizeOfSamples(N));
+    ::memcpy_s(p, bytesOfSamples(count()-idx), v, bytesOfSamples(N));
 }
 
 
@@ -106,16 +106,16 @@ void KcSampled1d::getSamples(kIndex idx, kReal* v, kIndex N) const
     assert(idx + N <= count());
     const kReal* p = data_.data() + offset_(idx);
 
-    ::memcpy_s(v, sizeOfSamples(N), p, sizeOfSamples(N));
+    ::memcpy_s(v, bytesOfSamples(N), p, bytesOfSamples(N));
 }
 
 
 void KcSampled1d::addSamples(kReal* v, kIndex N)
 {
-    data_.resize(data_.size() + channels() * N); // 增加c组通道数据
+    data_.resize(data_.size() + channels() * static_cast<std::vector<kReal>::size_type>(N)); // 增加c组通道数据
     samp_.growup(N); // 同步增大xmax
     kReal* p = data_.data() + offset_(count() - N);
-    ::memcpy_s(p, sizeOfSamples(N), v, sizeOfSamples(N));
+    ::memcpy_s(p, bytesOfSamples(N), v, bytesOfSamples(N));
 }
 
 
@@ -130,5 +130,5 @@ void KcSampled1d::reset(kReal dx, kIndex channels, kIndex samples)
 {
      samp_.resetn(samples, dx);
      channels_ = channels;
-     data_.resize(samples * channels);
+     data_.resize(static_cast<std::vector<kReal>::size_type>(samples) * channels);
 }

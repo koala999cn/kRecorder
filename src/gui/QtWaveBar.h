@@ -1,15 +1,15 @@
-#pragma once
+﻿#pragma once
 #include <QWidget>
 #include <vector>
 
 
 // 用于显示波形谱
-class QWaveBar : public QWidget
+class QtWaveBar : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit QWaveBar(QWidget *parent = nullptr);
+    explicit QtWaveBar(QWidget *parent = nullptr);
 
     void setForeground(QColor color) {
         barColor_ = color;

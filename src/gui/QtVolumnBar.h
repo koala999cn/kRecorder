@@ -1,16 +1,16 @@
-#pragma once
+﻿#pragma once
 #include <QWidget>
 
 // 用于麦克风输入音量实时显示的组件
 
 class QPaintEvent;
 
-class QVolumnBar : public QWidget
+class QtVolumnBar : public QWidget
 {
     Q_OBJECT
 
 public:
-    QVolumnBar(QWidget *parent);
+    QtVolumnBar(QWidget *parent);
 
     // 设置左右两个声道的音量值[0, 1]
     // 如果volRight < 0，则volRight = volLeft

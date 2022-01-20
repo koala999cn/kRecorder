@@ -1,29 +1,38 @@
-#pragma once
+﻿#pragma once
 #include <string>
+#include <vector>
+#include "kDsp.h"
 
 
 class KgAudioFile
 {
 public:
     KgAudioFile();
-    KgAudioFile(int channels, int sampleRate, long frames);
+    KgAudioFile(kIndex channels, unsigned sampleRate, kIndex frames);
     ~KgAudioFile();
 
-    bool open(const std::string& path, bool write = false);
+    enum KeOpenMode {
+        k_read,
+        k_write_very_low_quality = 1,
+        k_write_low_quality,
+        k_write_normal_quality,
+        k_write_high_quality,
+        k_write_very_high_quality
+    };
+
+    // @mode: 取KeOpenMode值
+    bool open(const std::string& path, int mode);
     bool isOpen() const;
 
-	/* Seek within the waveform data chunk of the SNDFILE. sf_seek () uses
-	** the same values for whence (SEEK_SET, SEEK_CUR and SEEK_END) as
-	** stdio.h function fseek ().
+	/* Seek within the waveform data chunk of the SNDFILE. 
 	** An offset of zero with whence set to SEEK_SET will position the
 	** read / write pointer to the first data sample.
 	** On success sf_seek returns the current position in (multi-channel)
 	** samples from the start of the file.
-	** Please see the libsndfile documentation for moving the read pointer
-	** separately from the write pointer on files open in mode SFM_RDWR.
 	** On error all of these functions return -1.
 	*/
-    long seek(long frames, int where);
+    // @where: uses the same values for whence(SEEK_SET, SEEK_CUR and SEEK_END) as stdio.h function fseek().
+    kIndex seek(kIndex frames, int where);
 
     void close();
 
@@ -32,24 +41,35 @@ public:
     auto frames() const { return frames_; }
 
     // buf.size >= frames*channels
-    long readFloat(float* buf, long frames);
-    long readDouble(double* buf, long frames);
+    kIndex read(kReal* buf, kIndex frames);
 
-    long writeFloat(const float* buf, long frames);
-    long writeDouble(const double* buf, long frames);
+    kIndex write(const kReal* buf, kIndex frames);
 
-    const char* error() const { return error_.c_str(); }
+    // bits per second
+    int bps() const;
+
+
+    const char* errorText() const { return error_.c_str(); }
 
     static int getSupportTypeCount();
     static const char* getTypeExtension(int nIndex);
     static const char* getTypeDescription(int nIndex);
 
 private:
-    void* snd_;
 
-    int channels_;
-    int sampleRate_;
-    long frames_;
+    // 封装重采样实现
+    kIndex write_(const kReal* buf, kIndex frames);
+
+    kIndex writeDirect_(const kReal* buf, kIndex frames);
+
+private:
+    void* snd_;
+    void* resampler_;
+    std::vector<void*> pstates_;
+
+    kIndex channels_;
+    unsigned sampleRate_;
+    kIndex frames_; // TODO: ???
 
     std::string error_;
 };

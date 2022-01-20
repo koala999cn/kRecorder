@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <cmath>
 #include <limits>
 #include "KtInterval.h"
@@ -10,7 +10,7 @@ class KtSampling
 {
 public:
 
-    KtSampling() : dx_(1) {}
+    KtSampling() : dx_(1), x0_(0) {}
     KtSampling(long nx) { resetn(nx); }
 
     KtSampling(KREAL xmin, KREAL xmax, KREAL dx, KREAL x0) {
@@ -41,7 +41,7 @@ public:
 
     // 根据采样点数目nx重置本对象
     void resetn(long nx) {
-        auto xmax = nx - 1;
+        kReal xmax = nx - 1;
         if(nx == 0) xmax = 0;
         else if(nx == 1) xmax = 0.5;
         interval_.reset(0, xmax);
@@ -63,7 +63,7 @@ public:
     // 根据采样点数目nx、采样区间[xmin, xmax]、x0相对偏移x0_rel_offset，重置本对象
     // @x0_rel_offset: 为0时，x0 = xmin; 为1时，x0 = xmin + dx; 为0.5时，x0 = xmin + dx/2; 等等
     void resetn(KREAL xmin, KREAL xmax, long nx, KREAL x0_rel_offset = 0) {
-        assert(nx > 1);
+        assert(nx > 0);
         assert(xmax > xmin);
         assert(x0_rel_offset >= 0 && x0_rel_offset <= 1);
 

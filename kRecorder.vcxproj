@@ -21,9 +21,9 @@
     <ClCompile Include="src\audio\KgAudioFile.cpp" />
     <ClCompile Include="src\base\KuThread.cpp" />
     <ClCompile Include="src\dsp\KcSampled1d.cpp" />
-    <ClCompile Include="src\gui\QUtils.cpp" />
-    <ClCompile Include="src\gui\QVolumnBar.cpp" />
-    <ClCompile Include="src\gui\QWaveBar.cpp" />
+    <ClCompile Include="src\gui\QtAuidoUtils.cpp" />
+    <ClCompile Include="src\gui\QtVolumnBar.cpp" />
+    <ClCompile Include="src\gui\QtWaveBar.cpp" />
     <ClCompile Include="src\KcAudioCaptureDlg.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
@@ -43,10 +43,11 @@
     <ClInclude Include="src\dsp\KtInterval.h" />
     <ClInclude Include="src\dsp\KtSampling.h" />
     <ClInclude Include="src\dsp\KtuMath.h" />
+    <ClInclude Include="src\dsp\KvData.h" />
     <ClInclude Include="src\dsp\KvData1d.h" />
-    <ClInclude Include="src\gui\QUtils.h" />
-    <QtMoc Include="src\gui\QWaveBar.h" />
-    <QtMoc Include="src\gui\QVolumnBar.h" />
+    <ClInclude Include="src\gui\QtAudioUtils.h" />
+    <QtMoc Include="src\gui\QtWaveBar.h" />
+    <QtMoc Include="src\gui\QtVolumnBar.h" />
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="resource\icons.qrc" />
@@ -113,23 +114,25 @@
     <ClCompile>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdparty;$(SolutionDir)src/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <DisableSpecificWarnings>4819</DisableSpecificWarnings>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdparty;$(SolutionDir)src;$(SolutionDir)src\dsp;$(SolutionDir)src\base;$(SolutionDir)src\audio;.\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4819;4828</DisableSpecificWarnings>
+      <PreprocessorDefinitions>$(Qt_DEFINES_);KDSP_REAL_AS_FLOAT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>$(Qt_LIBS_);rtaudiod.lib;libsndfiled.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(Qt_LIBPATH_);lib\$(Platform)-$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>$(Qt_LIBS_);rtaudiod.lib;sndfiled.lib;smarcd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(Qt_LIBPATH_);lib\$(Platform)-$(Configuration)\;C:\Project\3rdparty\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdparty;$(SolutionDir)src/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <DisableSpecificWarnings>4819</DisableSpecificWarnings>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdparty;$(SolutionDir)src;$(SolutionDir)src\dsp;$(SolutionDir)src\base;$(SolutionDir)src\audio;.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4819;4828</DisableSpecificWarnings>
+      <PreprocessorDefinitions>$(Qt_DEFINES_);KDSP_REAL_AS_FLOAT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>$(Qt_LIBS_);rtaudio.lib;libsndfile.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(Qt_LIBS_);rtaudio.lib;sndfile.lib;smarc.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(Qt_LIBPATH_);lib\$(Platform)-$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>

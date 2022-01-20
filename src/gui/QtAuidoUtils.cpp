@@ -1,8 +1,8 @@
-#include "QUtils.h"
+ï»¿#include "QtAudioUtils.h"
 #include <QString>
 #include <QFileDialog>
 #include <QStringLiteral>
-#include "../audio/KgAudioFile.h"
+#include "KgAudioFile.h"
 
 
 namespace kPrivate
@@ -35,17 +35,16 @@ namespace kPrivate
 }
 
 
-std::string QUtils::getAudioSavePath(QWidget* parent)
+QString QtAudioUtils::getSavePath(QWidget* parent)
 {
     auto filter = kPrivate::getAudioFileFilter();
-    auto path = QFileDialog::getSaveFileName(parent, QStringLiteral("±£´æÒôÆµ"), "", filter);
-    return path.toLocal8Bit().data();
+    return QFileDialog::getSaveFileName(parent, QStringLiteral(u"ä¿å­˜éŸ³é¢‘"), "", filter);
 }
 
 
-std::string QUtils::getAudioOpenPath(QWidget* parent)
+QString QtAudioUtils::getOpenPath(QWidget* parent)
 {
     auto filter = kPrivate::getAudioFileFilter();
-    auto path = QFileDialog::getOpenFileName(parent, QStringLiteral("´ò¿ªÒôÆµ"), "", filter);
-    return path.toLocal8Bit().data();
+    return QFileDialog::getOpenFileName(parent, QStringLiteral(u"æ‰“å¼€éŸ³é¢‘"), "", filter);
 }
+

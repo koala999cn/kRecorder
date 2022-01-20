@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <assert.h>
 #include <cmath>
 
@@ -9,7 +9,7 @@ class KtInterval
 {
 public:
 
-    KtInterval() {}
+    KtInterval() : start_(0), end_(0) {}
 
     KtInterval(T start, T end) : start_(start), end_(end) {
         assert(start_ <= end_);

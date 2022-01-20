@@ -1,8 +1,8 @@
-#include "QVolumnBar.h"
+﻿#include "QtVolumnBar.h"
 #include <QPainter>
 
 
-QVolumnBar::QVolumnBar(QWidget *parent)
+QtVolumnBar::QtVolumnBar(QWidget *parent)
     : QWidget(parent)
 {
     // 设置当前窗口无标题栏
@@ -17,7 +17,7 @@ QVolumnBar::QVolumnBar(QWidget *parent)
 }
 
 
-void QVolumnBar::paintEvent(QPaintEvent *)
+void QtVolumnBar::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
 

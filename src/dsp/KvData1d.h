@@ -1,19 +1,25 @@
-#pragma once
+﻿#pragma once
 #include "kDsp.h"
+#include "KvData.h"
 #include <vector>
 
 
 using kPoint2d = std::pair<kReal, kReal>;
 using kRange = std::pair<kReal, kReal>;
 
-// 用于绘图的数据接口类
-class KvData1d
+// 一维数据接口类
+class KvData1d : public KvData
 {
 public:
 
     KvData1d() {}
     virtual ~KvData1d() {}
 
+    /// 实现基类接口
+    unsigned dim() final { return 1; }
+
+
+    /// 定义自身接口
 
     // 获取数据点数目
     virtual kIndex count() const = 0;

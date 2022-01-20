@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <cmath>
 #include <limits>
 #include <vector>
@@ -117,25 +117,24 @@ public:
     static KREAL sumAbs(const KREAL x[], unsigned n); // 各元素绝对值之和
     static KREAL sum2(const KREAL x[], unsigned n); // 各元素平方之和
     static KREAL sumPower(const KREAL x[], unsigned n, KREAL power); // 各元素绝对值的power次方之和
-    static KREAL norm(const KREAL x[], unsigned n, KREAL N); // N阶范式
-    static void  normInplace(const KREAL x[], unsigned n, KREAL power, KREAL newNorm);
+    static KREAL norm(const KREAL x[], unsigned n, KREAL power); // power阶范式
+    static void  normalize(const KREAL x[], unsigned n, KREAL power, KREAL newNorm); // 对x做power阶范式规范化处理
 
     // Convert the vector x to probilities.  Divide each indice by the sum of the vector
     static void prob(KREAL x[]/*inout*/, unsigned n);
 
-    static void scale(KREAL x[], unsigned n, KREAL alpha); // x[i] *= alpha
-    static void shift(KREAL x[], unsigned n, KREAL scalar); // x[i] += scalar
-    static void subMean(KREAL x[], unsigned n);
-
-
     static KREAL product(const KREAL x[], unsigned n); // 各元素之积
-    static KREAL mean(const KREAL x[], unsigned n);
+    static KREAL mean(const KREAL x[], unsigned n); // sum(x[i]) / n
     static KREAL var(const KREAL x[], unsigned n, KREAL mean);
     static KREAL var(const KREAL x[], unsigned n) { return var(x, n, mean(x, n)); }
     static KREAL standardDeviation(const KREAL x[], unsigned n) { return std::sqrt(var(x, n)); }
 
     // Evaluate mean of a vector from elements that are not zeros
     static KREAL nonZeroMean(const KREAL x[], unsigned n);
+
+    static void scale(KREAL x[], unsigned n, KREAL alpha); // x[i] *= alpha
+    static void shift(KREAL x[], unsigned n, KREAL scalar); // x[i] += scalar
+    static void subMean(KREAL x[], unsigned n); // x[i] -= mean
 
     static void add(const KREAL x[], const KREAL y[], KREAL r[], unsigned n); // r[i] = x[i] + y[i]
     static void sub(const KREAL x[], const KREAL y[], KREAL r[], unsigned n); // r[i] = x[i] - y[i]
@@ -167,10 +166,9 @@ public:
     */
     static std::vector<KREAL> combMul(const std::vector<KREAL>& x, const std::vector<KREAL>& y);
 
+    // 过零数和过零率
     static unsigned getZeroCrossing(const KREAL x[], unsigned n);
-    static KREAL getZcr(const KREAL x[], unsigned n) { // 过零率
-        return  KREAL(getZeroCrossing(x, n)) / (n - 1);
-    }
+    static KREAL getZcr(const KREAL x[], unsigned n) { return  KREAL(getZeroCrossing(x, n)) / (n - 1); }
 
     static void applyFloor(KREAL x[], unsigned n, KREAL floor); // X = max(X, floor)
     static void applyExp(KREAL x[], unsigned n); // X = exp(X)
@@ -504,7 +502,7 @@ KREAL KtuMath<KREAL>::norm(const KREAL x[], unsigned n, KREAL power)
 }
 
 template<class KREAL>
-void KtuMath<KREAL>::normInplace(const KREAL x[], unsigned n, KREAL power, KREAL newNorm)
+void KtuMath<KREAL>::normalize(const KREAL x[], unsigned n, KREAL power, KREAL newNorm)
 {
     assert(newNorm > 0);
     KREAL oldnorm = norm(x, n, power);

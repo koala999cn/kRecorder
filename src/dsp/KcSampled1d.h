@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "KvData1d.h"
 #include <vector>
 #include "kDsp.h"
@@ -8,7 +8,7 @@
 class KcSampled1d : public KvData1d
 {
 public:
-    KcSampled1d() {}
+    KcSampled1d() : channels_(1) {}
     KcSampled1d(const std::vector<kReal>& data, kIndex channel = 1);
     KcSampled1d(std::vector<kReal>&& data, kIndex channel = 1);
 
@@ -60,11 +60,11 @@ public:
     // 按参数重置数据存储和采样参数
     void reset(kReal dx, kIndex channels, kIndex samples = 0);
 
+    // bps
+    auto bytesPerSample() const { return sizeof(kReal) * channels(); }
 
-    // N组采样点占据的内存大小(字节数)
-    unsigned sizeOfSamples(kIndex N = 1) const {
-        return channels() * sizeof(kReal) * N;
-    }
+    // N个采样点占据的内存大小(字节数)
+    auto bytesOfSamples(kIndex N) const { return bytesPerSample() * N; }
 
 
 protected:

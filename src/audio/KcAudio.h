@@ -1,5 +1,5 @@
-#pragma once
-#include "dsp/KcSampled1d.h"
+﻿#pragma once
+#include "KcSampled1d.h"
 #include <string>
 
 
@@ -13,7 +13,8 @@ public:
 
 
     // 保存音频到文件，成功返回空字符串，失败返回错误信息
-    std::string save(const std::string& path);
+    // quality代表音频编码品质，从0到4，品质逐渐升高
+    std::string save(const std::string& path, int quality = 2);
 };
 
 
