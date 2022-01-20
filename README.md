@@ -5,8 +5,11 @@
 
 #### 依赖库
 RtAudio: 录音和回放
+
 libsndfile: 音频文件编码
+
 smarc: 频率重采样
+
 cmdline: 命令行参数支持
 
 #### 编译
