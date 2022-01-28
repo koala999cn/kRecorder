@@ -253,7 +253,7 @@ void KcAudioCaptureDlg::syncDeviceInfo_()
 
     auto rate = ui->cbRate->currentText();
     ui->cbRate->clear();
-    ui->cbRate->addItem("自动选择");
+    ui->cbRate->addItem(u8"自动选择");
     for(unsigned i = 0; i < info.sampleRates.size(); i++)
         ui->cbRate->addItem(QString::number(info.sampleRates[i]));
     ui->cbRate->setCurrentText(rate);
@@ -415,7 +415,7 @@ void KcAudioCaptureDlg::on_btPause_clicked()
         }
     }
     else { // 继续
-        if (capture_->goon(true)) {
+        if (capture_->goon()) {
             syncUiState_(kState::capture);
             return;
         }

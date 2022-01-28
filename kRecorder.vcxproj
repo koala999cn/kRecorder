@@ -19,7 +19,6 @@
     <ClCompile Include="src\audio\KcAudioDevice.cpp" />
     <ClCompile Include="src\audio\KcAudioRender.cpp" />
     <ClCompile Include="src\audio\KgAudioFile.cpp" />
-    <ClCompile Include="src\base\KuThread.cpp" />
     <ClCompile Include="src\dsp\KcSampled1d.cpp" />
     <ClCompile Include="src\gui\QtAuidoUtils.cpp" />
     <ClCompile Include="src\gui\QtVolumnBar.cpp" />
@@ -37,7 +36,6 @@
     <ClInclude Include="src\audio\KcAudioRender.h" />
     <ClInclude Include="src\audio\KgAudioFile.h" />
     <ClInclude Include="src\base\KtObservable.h" />
-    <ClInclude Include="src\base\KuThread.h" />
     <ClInclude Include="src\dsp\KcSampled1d.h" />
     <ClInclude Include="src\dsp\kDsp.h" />
     <ClInclude Include="src\dsp\KtInterval.h" />
@@ -81,7 +79,7 @@
     <QtBuildConfig>debug</QtBuildConfig>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="QtSettings">
-    <QtInstall>6.2.2_msvc2019_64</QtInstall>
+    <QtInstall>6.2.2</QtInstall>
     <QtModules>core;widgets</QtModules>
     <QtBuildConfig>release</QtBuildConfig>
     <QtDeploy>true</QtDeploy>

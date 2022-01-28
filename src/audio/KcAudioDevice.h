@@ -123,11 +123,11 @@ public:
 
 
     // close a stream and frees any associated stream memory.
-    bool close(bool wait);
+    bool close();
 
 
 	//! A function that starts a stream.
-    bool start(bool wait);
+    bool start();
 
 
 	//! Stop a stream, allowing any samples remaining in the output queue to be played.
@@ -144,6 +144,10 @@ public:
 
 	//! Returns true if the stream is running and false if it is stopped or not open.
     bool running() const;
+
+
+    //! wait until device not running
+    void wait() const;
 
 
 	//! Returns the number of elapsed seconds since the stream was started.

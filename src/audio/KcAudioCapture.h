@@ -37,7 +37,7 @@ public:
     bool pause(bool wait);
 
     // 继续录制
-    bool goon(bool wait);
+    bool goon();
 
     // 是否正在录制？
     bool running() const;

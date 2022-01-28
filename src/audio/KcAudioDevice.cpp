@@ -1,6 +1,6 @@
 ﻿#include "KcAudioDevice.h"
 #include "rtaudio/RtAudio.h"
-#include "base/KuThread.h"
+#include <thread>
 
 
 #if defined(_MSC_VER)
@@ -50,7 +50,7 @@
  */
 namespace kPrivate
 {
-    int audioCallback(void *outputBuffer, void *inputBuffer, unsigned frames,
+    int RtAudioCallback(void *outputBuffer, void *inputBuffer, unsigned frames,
                         double streamTime, RtAudioStreamStatus, void *userData)
     {
         return ((KcAudioDevice*)userData)->notify(outputBuffer, inputBuffer, frames, streamTime)
@@ -61,7 +61,7 @@ namespace kPrivate
 
 KcAudioDevice::KcAudioDevice(void) : inChannels_(0), outChannels_(0), frameSamples_(0)
 {
-    device_ = new RtAudio(RtAudio::WINDOWS_DS);
+    device_ = new RtAudio();
 }
 
 
@@ -71,7 +71,7 @@ KcAudioDevice::~KcAudioDevice(void)
         stop(true);
 
     if(opened())
-        close(true);
+        close();
 
     delete RTAudio_;
 }
@@ -175,7 +175,7 @@ bool KcAudioDevice::open(const KpStreamParameters *outputParameters, const KpStr
 
 	try	{
         RTAudio_->openStream(pkoParams, pkiParams, format, sampleRate, &bufferFrames,
-                             kPrivate::audioCallback, this);
+                             kPrivate::RtAudioCallback, this);
         frameSamples_ = bufferFrames;
 	}
     catch(RtAudioError& err) {
@@ -187,11 +187,10 @@ bool KcAudioDevice::open(const KpStreamParameters *outputParameters, const KpStr
 }
 
 
-bool KcAudioDevice::close(bool wait)
+bool KcAudioDevice::close()
 {
     try	{
         RTAudio_->closeStream();
-        if(wait) while(opened()) KuThread::wait(0.05f);
     }
     catch(RtAudioError& err) {
         error_ = err.getMessage();
@@ -202,13 +201,12 @@ bool KcAudioDevice::close(bool wait)
 }
 
 
-bool KcAudioDevice::start(bool wait)
+bool KcAudioDevice::start()
 {
     reset(); // 允许向观察者发送消息
 
     try	{
         RTAudio_->startStream();
-        if(wait) while(!running()) KuThread::wait(0.05f);
     }
     catch(RtAudioError& err) {
         error_ = err.getMessage();
@@ -219,11 +217,11 @@ bool KcAudioDevice::start(bool wait)
 }
 
 
-bool KcAudioDevice::stop(bool wait)
+bool KcAudioDevice::stop(bool wait_)
 {
     try	{
         RTAudio_->stopStream();
-        if(wait) while(running()) KuThread::wait(0.05f);
+        if(wait_) wait();
     }
     catch(RtAudioError& err) {
         error_ = err.getMessage();
@@ -236,11 +234,11 @@ bool KcAudioDevice::stop(bool wait)
 }
 
 
-bool KcAudioDevice::abort(bool wait)
+bool KcAudioDevice::abort(bool wait_)
 {
     try	{
         RTAudio_->abortStream();
-        if(wait) while(running()) KuThread::wait(0.05f);
+        if(wait_) wait();
     }
     catch(RtAudioError& err) {
         error_ = err.getMessage();
@@ -262,6 +260,13 @@ bool KcAudioDevice::opened() const
 bool KcAudioDevice::running() const
 {
     return RTAudio_->isStreamRunning();
+}
+
+
+void KcAudioDevice::wait() const
+{
+    while (running()) 
+        std::this_thread::yield();
 }
 
 

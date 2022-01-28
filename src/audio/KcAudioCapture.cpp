@@ -88,7 +88,8 @@ bool KcAudioCapture::record(unsigned deviceId, unsigned sampleRate, unsigned cha
         device_->sampleRate() != sampleRate ||
         (frameTime > 0 && frameTime != device_->frameDuration())) {
 
-        if (device_->opened()) device_->close(true);
+        if (device_->running()) device_->stop(true);
+        if (device_->opened()) device_->close();
         if (frameTime <= 0) frameTime = 0.05; // 缺省帧长50ms
 
         KcAudioDevice::KpStreamParameters iParam;
@@ -109,7 +110,7 @@ bool KcAudioCapture::record(unsigned deviceId, unsigned sampleRate, unsigned cha
 
     if (running()) stop(true);
 
-    return startImmediately ? device_->start(true) : true;
+    return startImmediately ? device_->start() : true;
 }
 
 
@@ -127,7 +128,7 @@ bool KcAudioCapture::record(std::shared_ptr<KcAudio>& audio, unsigned deviceId, 
     pushBack(std::make_shared<KcAudioCaptureObserver>(audio));
 
     device_->setStreamTime(audio->xrange().first);
-    return device_->start(true);
+    return device_->start();
 }
 
 
@@ -143,7 +144,7 @@ bool KcAudioCapture::record(std::shared_ptr<KgAudioFile>& file, unsigned deviceI
 
     pushBack(std::make_shared<KcFileCaptureObserver>(file));
 
-    return device_->start(true);
+    return device_->start();
 }
 
 
@@ -173,10 +174,10 @@ bool KcAudioCapture::pause(bool wait)
 }
 
 
-bool KcAudioCapture::goon(bool wait) 
+bool KcAudioCapture::goon() 
 { 
     assert(pausing());
-    return device_->start(wait); 
+    return device_->start(); 
 }
 
 

@@ -97,7 +97,7 @@ bool KcAudioRender::playback(const std::shared_ptr<KcAudio>& audio, unsigned dev
     pushFront(std::make_shared<kPrivate::KcAudioRenderObserver>(audio)); // 放在最前面，这样写入的数据才能被其他观察者看到
 
     device_->setStreamTime(audio->xrange().first);
-    return device_->start(true);
+    return device_->start();
 }
 
 
@@ -112,7 +112,7 @@ bool KcAudioRender::playback(const std::shared_ptr<KgAudioFile>& file, unsigned 
     assert(get<kPrivate::KcFileRenderObserver>() == nullptr);
     pushFront(std::make_shared<kPrivate::KcFileRenderObserver>(file)); // 放在最前面，这样写入的数据才能被其他观察者看到
 
-    return device_->start(true);
+    return device_->start();
 }
 
 
@@ -138,7 +138,7 @@ bool KcAudioRender::pause(bool wait)
 bool KcAudioRender::goon(bool wait)
 {
     assert(pausing());
-    return device_->start(wait);
+    return device_->start();
 }
 
 
@@ -167,7 +167,7 @@ bool KcAudioRender::open_(unsigned deviceId, unsigned sampleRate, unsigned chann
         device_->sampleRate() != sampleRate ||
         (frameTime > 0 && frameTime != device_->frameDuration())) {
 
-        if (device_->opened()) device_->close(true);
+        if (device_->opened()) device_->close();
         if (frameTime <= 0) frameTime = 0.05; // 缺省帧长50ms
 
         KcAudioDevice::KpStreamParameters oParam;
